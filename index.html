@@ -1,0 +1,189 @@
+<button onclick="Gen(1)">Gen 1</button>
+<button onclick="Gen(10)">Gen 10</button>
+<button onclick="Gen(100)">Gen 100</button>
+<button onclick="Gen(1000)">Gen 1000</button>
+<div style="font-family: monospace;"></div>
+<script type="text/javascript">
+    //https://stackoverflow.com/a/52713698
+    function stringGen(yourNumber) {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (var i = 0; i < yourNumber; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
+
+    //https://gist.github.com/kevinyan815/f71b2f5ca3541631abd2e50f3929739b
+    function toBase62(n) {
+        if (n === 0) {
+            return '0';
+        }
+        var digits = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var result = '';
+        while (n > 0) {
+            result = digits[n % digits.length] + result;
+            n = parseInt(n / digits.length, 10);
+        }
+
+        return result;
+    }
+
+    //https://stackoverflow.com/a/18639999
+    var crc32 = function (str) {
+        var makeCRCTable = function () {
+            var c;
+            var crcTable = [];
+            for (var n = 0; n < 256; n++) {
+                c = n;
+                for (var k = 0; k < 8; k++) {
+                    c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+                }
+                crcTable[n] = c;
+            }
+            return crcTable;
+        }
+        var crcTable = window.crcTable || (window.crcTable = makeCRCTable());
+        var crc = 0 ^ (-1);
+
+        for (var i = 0; i < str.length; i++) {
+            crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+        }
+
+        return (crc ^ (-1)) >>> 0;
+    };
+
+
+    //https://stackoverflow.com/a/62293195
+    let alterCase = function (str) {
+        return newStr = str
+            .split("")
+            .map(c => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()))
+            .join("");
+
+        console.log(newStr);
+    }
+
+    //https://github.blog/2021-04-05-behind-githubs-new-authentication-token-formats/
+    let Gen = function (number) {
+        let res = ""
+        for (let index = 0; index < number; index++) {
+
+            let prefixes = ["ghp", "gho", "ghu", "ghs", "ghr"]
+            let prefix = prefixes[Math.floor(Math.random() * prefixes.length)] + "_"
+            let middle = stringGen(30)
+            let endpadded = "000000" + alterCase(toBase62(crc32(middle)))
+            let end = endpadded.slice(-6)
+            res += prefix + middle + end + "<br>";
+        }
+
+        document.getElementsByTagName("div")[0].innerHTML = res;
+    }
+
+
+
+
+    "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"
+    "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"
+    "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"
+    "ghs_NLxWDeTSIDZJggDwzbr8THTSzsbFiL2uBLlX"
+    "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"
+    "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"
+    "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"
+    "ghu_Lk4jI4b3fklTP5gP0sWK5EPQU2OPEh0lacsX"
+    "ghs_ROrX9H1FlPdb5M7GIsELZlMjQTi16F0hUJfW"
+    "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"
+    "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"
+    "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"
+    "ghs_VI9GUdhWuEFHgZXQ0RiR3FKZLJhme02uW8AO"
+    "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"
+    "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"
+    "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"
+    "ghu_WkTWNBLwjnxgkpS1Y0Qz6BWiB9th0p2u126f"
+    "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"
+    "ghu_ZZT5UKjxey5Um7Pd1mvDXZvEtk3JFL06JN4e"
+    "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"
+    "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"
+    "ghu_SjopGugs61w4UfK7YHsUn5qxWFzDlP0oc1Un"
+    "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"
+    "ghu_dXwAM3SICeSBQNms43PkY1LuKnBtGO1idPL6"
+    "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"
+    "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"
+    "ghu_QCTxmrZr8NJAQ6o2cOLLakhzy64d2o2UAKQS"
+    "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"
+    "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"
+    "ghu_iZGpHxajo7JSUSBreE8vKe9DIYl6qe2FMdGq"
+    "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"
+    "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"
+    "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"
+    "ghs_9A2oxtJCRSICIBz3tlONaF2ECr8d2E0FBwHw"
+    "ghu_KS1DaMFDxrOVfHi6l7jrpDnZ78jGKP14jP8L"
+    "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"
+    "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"
+    "ghu_xlCdizvWLjRBgca1Shscjos06GSgRz0mMB4k"
+    "ghs_ZVgX3V3IVItqo4tZWQm5Jqx7KSY4NR2oGARi"
+    "ghs_EkIWFOEftr8p1RyGd5zn0f2KHGoZ5m2shhMU"
+    "ghs_cUs2XgHEZ84Mvpj977OMCSkSVsq2yI39c9Jo"
+    "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"
+    "ghu_0KyrW3ODIkmtxZ2XKI6GOaCmJMKzAl3OBdXH"
+    "ghu_0XITRJvsELQDsfirhQTCW8nUvwAf2u2kee44"
+    "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"
+    "ghu_YDC8DI1NB42mrxzeobM9dVhAqvozLk0ZNX0z"
+    "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"
+    "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"
+    "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"
+    "ghs_e8sXoLJwEpijuNkfBD9luQ69VYL7hW1dP9R0"
+    "ghu_PHKgCWJqjCLnmYwoA5VbBCIX92PjMT4BfKCa"
+    "ghs_ZvaRIm4nNeZlIIAKiz3pA0ounCyhen4e1hWr"
+    "ghu_BR0i7lQyKmcRSXRQYerXZjcW5Wegf12uCJsk"
+    "ghu_Ns1LRzUDQuPuWGYNwiyFhMaDKX1cdc0gWwWn"
+    "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"
+    "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"
+    "ghu_kIU98ae1SL6DUJkvteZxPgsFOR28Uh3rK8Hn"
+    "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"
+    "ghs_jhFwnWEVtQS9r8OygTUPrrgwDoUSC34Zo6kV"
+    "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"
+    "ghs_vwcOOyuu5cXi3H9hMNTZnUbu1msFDN0VB8JX"
+    "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"
+    "ghs_tuc3JASFa9kFGIVvoKFj0i9gdxIa7H2Xr6q8"
+    "ghu_p7ICoDQyt5yLFLT3B1ql5naPDyGlSw2qmi8Z"
+    "ghu_phwsKh7b0R8nz9TNtu57cTGhwe6GU33SNcRa"
+    "ghs_TttP8ysoLS2aVZi06GW8Vtc2e5Nvra3xFDL0"
+    "ghs_fIVEd0zpGwkZJfERVkiVZKOV17eL0r24aq4l"
+    "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"
+    "ghs_PT2LKMKGuWuiHXtq5js2Zit4TuaPlO27WbSO"
+    "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"
+    "ghs_8uguCR36molBGhHfozxYxWTVA52z7v4MoyUH"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "ghu_OgNfsZLUeB1qAjaGANCDJY4KgyE7sT0VKP4G"
+    "ghs_RLWP3LoXTYSJJy0dzYigVW52ZAltWI1Na4l8"
+    "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"
+    "ghs_gDgOq2mWT1g2GTt5zIt5PZ8vyeLDOF3aISp3"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "ghu_VsVU21tyHAmCyADZm3qt0O56CfbzJO4fvBXf"
+    "ghu_W3fsgNXokX6fTtHWah5AxWIUxdh3ZC2lBCF5"
+    "ghs_L19LuzHdfU5PsjDTpNGPREGD8omvqf0tP7lI"
+    "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"
+    "ghu_l0PXFT0OuySKoiprjhBmhiEwGkPOmp0Zb8JF"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+    "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"
+
+</script>
